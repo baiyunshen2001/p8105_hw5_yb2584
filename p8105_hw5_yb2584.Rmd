@@ -4,4 +4,47 @@ author: "Yunshen Bai"
 date: "`r Sys.Date()`"
 output: github_document
 ---
+```{r,message=FALSE,warning=FALSE}
+library(tidyverse)
+library(rvest)
+library(dplyr)
+library(tidyr)
+```
+
+## Problem 1
+First, we read the raw data
+```{r,message=FALSE}
+homi=read_csv("./data/homicide-data.csv")
+homi|>
+  head(10)|>
+  knitr::kable()
+```
+
+Create a `city_state` variable 
+```{r}
+homi=
+  homi|>
+  mutate(city_state=paste(city,state, sep = ",", collapse = NULL))
+homi|>
+  head(10)|>
+  knitr::kable()
+```
+
+The total number of homicides and the number of unsolved homicides are
+```{r,message=FALSE}
+homi|>
+  group_by(city,disposition)|>
+  summarise(n=n())|>
+  pivot_wider(names_from = disposition,values_from = n)|>
+  janitor::clean_names()|>
+  mutate_if(function(x) any(is.na(x)),
+    funs(replace_na),
+    replace = 0)|>
+  mutate(homicides=closed_by_arrest+closed_without_arrest+open_no_arrest,
+         unsolved_homicides=closed_without_arrest+open_no_arrest)|>
+  select(city,homicides,unsolved_homicides)|>
+  knitr::kable()
+```
+
+
 
