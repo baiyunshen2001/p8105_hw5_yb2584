@@ -82,6 +82,20 @@ test_results %>%
 This figure suggests a very wide range in the rate at which homicides are solved -- Chicago is noticeably high and, given the narrowness of the CI, likely is the location of many homicides. 
 
 ## Problem 2
+```{r,message=FALSE}
+files_name=list.files("./data/data")
+setwd("C:/Users/Leon/Desktop/p8105_hw5_yb2584/data/data")
+output=map(files_name,read_csv)
+```
+
+
+```{r}
+dt=
+  do.call(rbind.data.frame, output)|>
+  mutate(arm=str_remove(files_name,".csv"))|>
+  select(arm,everything())
+```
+
 
 
 
